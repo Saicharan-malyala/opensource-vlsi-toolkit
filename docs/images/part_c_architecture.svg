@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 380" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <marker id="arrC" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#818cf8"/>
+    </marker>
+  </defs>
+  <rect width="920" height="380" rx="16" fill="url(#bgC)" stroke="#1e293b" stroke-width="2"/>
+  
+  <text x="460" y="45" fill="#818cf8" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">
+    📖 PART C: STANDALONE MANUAL INSTALLATION &amp; LEARNING ROADMAP
+  </text>
+  <text x="460" y="70" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">
+    100% Native Host Binaries • No Containers • Command-by-Command Mastery
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="100" width="150" height="180" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+  <text x="115" y="130" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">1. Foundations</text>
+  <text x="60" y="165" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• Git</text>
+  <text x="60" y="195" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• GNU Make</text>
+  <text x="60" y="225" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• Python 3.10+</text>
+  <text x="60" y="255" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">pip &amp; venv</text>
+
+  <!-- Arrow 1-2 -->
+  <path d="M 190 190 L 220 190" fill="none" stroke="#818cf8" stroke-width="2.5" marker-end="url(#arrC)"/>
+
+  <!-- Step 2 -->
+  <rect x="220" y="100" width="150" height="180" rx="10" fill="#1e1e38" stroke="#a855f7" stroke-width="2"/>
+  <text x="295" y="130" fill="#c084fc" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">2. Simulation</text>
+  <text x="240" y="165" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• iverilog</text>
+  <text x="240" y="195" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• GTKWave</text>
+  <text x="240" y="225" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• Verilator</text>
+  <text x="240" y="255" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">cocotb &amp; pyuvm</text>
+
+  <!-- Arrow 2-3 -->
+  <path d="M 370 190 L 400 190" fill="none" stroke="#818cf8" stroke-width="2.5" marker-end="url(#arrC)"/>
+
+  <!-- Step 3 -->
+  <rect x="400" y="100" width="150" height="180" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="2"/>
+  <text x="475" y="130" fill="#34d399" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">3. Logic &amp; P&amp;R</text>
+  <text x="420" y="165" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• Yosys</text>
+  <text x="420" y="195" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• OpenSTA</text>
+  <text x="420" y="225" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• OpenROAD</text>
+  <text x="420" y="255" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">Floorplan &amp; Route</text>
+
+  <!-- Arrow 3-4 -->
+  <path d="M 550 190 L 580 190" fill="none" stroke="#818cf8" stroke-width="2.5" marker-end="url(#arrC)"/>
+
+  <!-- Step 4 -->
+  <rect x="580" y="100" width="150" height="180" rx="10" fill="#7c2d12" stroke="#f97316" stroke-width="2"/>
+  <text x="655" y="130" fill="#fb923c" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">4. DRC/LVS</text>
+  <text x="600" y="165" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• Magic (DRC)</text>
+  <text x="600" y="195" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• Netgen (LVS)</text>
+  <text x="600" y="225" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• KLayout (GDS)</text>
+  <text x="600" y="255" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">ngspice &amp; Xschem</text>
+
+  <!-- Arrow 4-5 -->
+  <path d="M 730 190 L 760 190" fill="none" stroke="#818cf8" stroke-width="2.5" marker-end="url(#arrC)"/>
+
+  <!-- Step 5 -->
+  <rect x="760" y="100" width="130" height="180" rx="10" fill="#4c1d95" stroke="#c084fc" stroke-width="2"/>
+  <text x="825" y="130" fill="#c084fc" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">5. PDKs</text>
+  <text x="775" y="165" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• Ciel CLI</text>
+  <text x="775" y="195" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">• SkyWater</text>
+  <text x="775" y="225" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12">  130nm PDK</text>
+  <text x="775" y="255" fill="#34d399" font-family="system-ui, sans-serif" font-size="11">Ready to Signoff</text>
+</svg>

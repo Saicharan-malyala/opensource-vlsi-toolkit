@@ -1,0 +1,21 @@
+# Logs generated during test executions
+logs/
+*.log
+
+# Python bytecode & environments
+__pycache__/
+*.py[cod]
+.eda_venv/
+.venv/
+env/
+venv/
+
+# EDA flow artifacts
+upstream_iic_osic_tools/
+sim_build/
+*.vcd
+*.fst
+*.vvp
+*.xml
+results/
+runs/

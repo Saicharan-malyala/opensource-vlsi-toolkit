@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="hostGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="pathAGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c2d12"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="pathBGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="pathCGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#ea580c"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#6366f1"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="480" rx="16" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- Top Host Platform Box -->
+  <g>
+    <rect x="180" y="24" width="600" height="74" rx="12" fill="url(#hostGrad)" stroke="#38bdf8" stroke-width="2"/>
+    <text x="480" y="52" fill="#38bdf8" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">
+      FOUNDATION &amp; HOST PLATFORM (Part D)
+    </text>
+    <text x="480" y="76" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="13" text-anchor="middle">
+      Windows 10/11 with WSL2 (Ubuntu)  •  Native Linux (Ubuntu / Debian / Fedora / Arch)  •  Docker Engine
+    </text>
+  </g>
+
+  <!-- Flow Lines to 3 Columns -->
+  <path d="M 330 98 L 330 135 L 170 135 L 170 160" fill="none" stroke="#ea580c" stroke-width="2.5" marker-end="url(#arrow-orange)"/>
+  <path d="M 480 98 L 480 160" fill="none" stroke="#059669" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <path d="M 630 98 L 630 135 L 790 135 L 790 160" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
+
+  <!-- COLUMN 1: Part A -->
+  <g>
+    <rect x="30" y="165" width="280" height="48" rx="8" fill="url(#pathAGrad)"/>
+    <text x="170" y="195" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" text-anchor="middle">
+      ⚡ Part A: LibreLane Flow
+    </text>
+    <rect x="30" y="220" width="280" height="230" rx="10" fill="#131c2e" stroke="#ea580c" stroke-width="1.5"/>
+    <text x="48" y="248" fill="#f97316" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">Modern Digital RTL-to-GDSII</text>
+    <text x="48" y="278" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">🖥️ Local Host Tools:</text>
+    <text x="64" y="298" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• iverilog, Verilator, GTKWave, ngspice</text>
+    <text x="48" y="328" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">🐍 Python Venv (~/.eda_venv):</text>
+    <text x="64" y="348" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• LibreLane 3.0 &amp; Ciel 3.0 Manager</text>
+    <text x="64" y="366" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• SkyWater 130nm PDK (~/.ciel/sky130A)</text>
+    <text x="48" y="396" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">🐳 Docker Execution Backend:</text>
+    <text x="64" y="416" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• Yosys, OpenROAD, Magic, Netgen</text>
+    <text x="64" y="434" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">Runner: librelane --dockerized</text>
+  </g>
+
+  <!-- COLUMN 2: Part B -->
+  <g>
+    <rect x="340" y="165" width="280" height="48" rx="8" fill="url(#pathBGrad)"/>
+    <text x="480" y="195" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" text-anchor="middle">
+      🐳 Part B: IIC-OSIC-TOOLS
+    </text>
+    <rect x="340" y="220" width="280" height="230" rx="10" fill="#131c2e" stroke="#059669" stroke-width="1.5"/>
+    <text x="358" y="248" fill="#10b981" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">All-In-One Unified Container</text>
+    <text x="358" y="278" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">📦 Container (hpretl/iic-osic):</text>
+    <text x="374" y="298" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• 50+ Pre-Installed EDA Tools</text>
+    <text x="374" y="316" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• Yosys, OpenROAD, Xschem, ngspice</text>
+    <text x="358" y="344" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">💾 Multi-PDKs Built-in:</text>
+    <text x="374" y="364" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• Sky130A, GF180MCU, IHP-SG13G2</text>
+    <text x="374" y="382" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• Switch with: sak-pdk &lt;name&gt;</text>
+    <text x="358" y="410" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">🖥️ Instant GUI Access:</text>
+    <text x="374" y="430" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="11.5" font-weight="bold">• Browser noVNC: http://localhost:80</text>
+    <text x="374" y="446" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">• Native WSLg/X11: ./start_x.sh</text>
+  </g>
+
+  <!-- COLUMN 3: Part C -->
+  <g>
+    <rect x="650" y="165" width="280" height="48" rx="8" fill="url(#pathCGrad)"/>
+    <text x="790" y="195" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" text-anchor="middle">
+      📖 Part C: Standalone Manual
+    </text>
+    <rect x="650" y="220" width="280" height="230" rx="10" fill="#131c2e" stroke="#4f46e5" stroke-width="1.5"/>
+    <text x="668" y="248" fill="#818cf8" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">100% Native Host Binaries</text>
+    <text x="668" y="278" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">⚙️ Step-by-Step Learning:</text>
+    <text x="684" y="298" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• Build tools from source or repo pkgs</text>
+    <text x="684" y="316" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• No automation scripts or black boxes</text>
+    <text x="668" y="344" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">📚 Complete Tool Coverage:</text>
+    <text x="684" y="364" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• Git, GNU Make, Python 3.10+</text>
+    <text x="684" y="382" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• iverilog, Verilator, GTKWave, cocotb</text>
+    <text x="684" y="400" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11.5">• Yosys, OpenSTA, OpenROAD, Magic</text>
+    <text x="668" y="428" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">Best for Deep Academic Understanding</text>
+  </g>
+</svg>
