@@ -133,6 +133,7 @@ Set-ExecutionPolicy RemoteSigned -Scope Process
 Clone the repo and run the master installer:
 ```bash
 git clone https://github.com/Saicharan-malyala/opensource-vlsi-toolkit.git
+cd opensource-vlsi-toolkit
 chmod +x install_all.sh doctor.sh lib/*.sh scripts/*/*.sh scripts/*/*/*.sh
 ./install_all.sh
 ```
