@@ -132,8 +132,7 @@ Set-ExecutionPolicy RemoteSigned -Scope Process
 ### 🐧 Linux Users (Ubuntu, Debian, Fedora, Arch)
 Clone the repo and run the master installer:
 ```bash
-git clone https://github.com/your-username/eda-tools-installer.git
-cd eda-tools-installer
+git clone https://github.com/Saicharan-malyala/opensource-vlsi-toolkit.git
 chmod +x install_all.sh doctor.sh lib/*.sh scripts/*/*.sh scripts/*/*/*.sh
 ./install_all.sh
 ```
