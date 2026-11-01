@@ -80,7 +80,7 @@ if command -v docker >/dev/null 2>&1; then
         
         # Test container invocation (invoking docker test container and exiting cleanly)
         log_info "Testing docker execution (invoking hello-world container)..."
-        local non_root_ok=0
+        non_root_ok=0
         if docker ps >/dev/null 2>&1 && docker run --rm hello-world >/dev/null 2>&1; then
             non_root_ok=1
             log_success "Docker non-root execution passed (hello-world container invoked and exited successfully)."

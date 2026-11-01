@@ -52,7 +52,7 @@ if command -v ciel >/dev/null 2>&1; then
     export PDK_ROOT="${PDK_ROOT_DIR}"
     mkdir -p "${PDK_ROOT_DIR}"
 
-    local pdk_installed=0
+    pdk_installed=0
     if ciel ls --pdk-family="${PDK_FAMILY}" 2>/dev/null | grep -q "installed"; then
         log_info "${PDK_FAMILY} PDK is already installed in ${PDK_ROOT_DIR}."
         pdk_installed=1
