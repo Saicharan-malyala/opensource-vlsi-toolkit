@@ -51,7 +51,15 @@ fi
 if command -v librelane >/dev/null 2>&1; then
     L_VER=$(librelane --version 2>&1 | awk '{print $NF}' || echo "installed")
     log_info "Running official LibreLane smoke test (dockerized)..."
-    if librelane --dockerized --smoke-test 2>&1 | tee -a "${LOG_FILE}"; then
+    
+    # Check if current shell session can access Docker without sudo
+    SMOKE_CMD="librelane --dockerized --smoke-test"
+    if ! docker ps >/dev/null 2>&1 && sudo docker ps >/dev/null 2>&1; then
+        log_info "Running smoke test with sudo for active session (until re-login)..."
+        SMOKE_CMD="sudo ${EDA_VENV}/bin/librelane --dockerized --smoke-test"
+    fi
+
+    if ${SMOKE_CMD} 2>&1 | tee -a "${LOG_FILE}"; then
         log_success "Verified ${TOOL_NAME} v${L_VER} (smoke test passed)."
         record_summary "${TOOL_NAME}" "INSTALLED" "v${L_VER} (smoke test passed)"
     else

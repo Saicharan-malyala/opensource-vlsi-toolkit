@@ -59,9 +59,21 @@ if command -v ciel >/dev/null 2>&1; then
         DEFAULT_PDK_HASH=$(ciel ls-remote --pdk-family="${PDK_FAMILY}" 2>/dev/null | grep -v '^\s*$' | tail -n1 | awk '{print $1}' || echo "")
         if [[ -n "${DEFAULT_PDK_HASH}" ]]; then
             log_info "Enabling ${PDK_FAMILY} PDK commit ${DEFAULT_PDK_HASH} via ciel (this may take a few minutes)..."
-            run_cmd ciel enable --pdk-family="${PDK_FAMILY}" "${DEFAULT_PDK_HASH}" || {
-                log_warn "ciel enable returned non-zero. You can re-run 'ciel enable --pdk-family=${PDK_FAMILY} <hash>' later."
-            }
+            # Retry up to 3 times in case of transient network read timeouts
+            local success=0
+            for attempt in 1 2 3; do
+                log_info "Downloading and enabling PDK (attempt ${attempt}/3)..."
+                if run_cmd ciel enable --pdk-family="${PDK_FAMILY}" "${DEFAULT_PDK_HASH}"; then
+                    success=1
+                    break
+                else
+                    log_warn "ciel enable attempt ${attempt} failed or timed out. Waiting 5s before retrying..."
+                    sleep 5
+                fi
+            done
+            if [[ ${success} -eq 0 ]]; then
+                log_warn "ciel enable failed after 3 attempts. You can re-run 'ciel enable --pdk-family=${PDK_FAMILY} <hash>' later."
+            fi
         else
             log_warn "Could not resolve remote ${PDK_FAMILY} PDK hash automatically. You can run 'ciel enable --pdk-family=${PDK_FAMILY} <hash>' later."
         fi
