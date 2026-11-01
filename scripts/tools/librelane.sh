@@ -61,10 +61,10 @@ if command -v librelane >/dev/null 2>&1; then
 
     if ${SMOKE_CMD} 2>&1 | tee -a "${LOG_FILE}"; then
         log_success "Verified ${TOOL_NAME} v${L_VER} (smoke test passed)."
-        record_summary "${TOOL_NAME}" "INSTALLED" "v${L_VER} (smoke test passed)"
+        record_summary "${TOOL_NAME}" "PASSED" "v${L_VER} (smoke test passed)"
     else
         log_warn "Smoke test failed or requires docker service startup. Please ensure Docker daemon is active."
-        record_summary "${TOOL_NAME}" "INSTALLED" "v${L_VER} (smoke test pending)"
+        record_summary "${TOOL_NAME}" "FAILED" "v${L_VER} (smoke test failed)"
     fi
 else
     log_error "Failed to verify ${TOOL_NAME}."

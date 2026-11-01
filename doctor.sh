@@ -73,35 +73,29 @@ check_item() {
             ;;
         docker)
             if command -v docker >/dev/null 2>&1; then
-                DOCKER_CMD="docker"
-                if ! docker info >/dev/null 2>&1; then
-                    if sudo docker info >/dev/null 2>&1; then
-                        DOCKER_CMD="sudo docker"
-                    fi
-                fi
-                if ${DOCKER_CMD} info >/dev/null 2>&1; then
-                    # Probe container invocation and exit cleanly
-                    if ${DOCKER_CMD} run --rm hello-world >/dev/null 2>&1; then
-                        status="PASS"
-                        if [[ "${DOCKER_CMD}" == "sudo docker" ]]; then
-                            detail="Responding (sudo; newgrp docker needed)"
-                        else
-                            detail="Daemon responding (test run passed)"
-                        fi
-                    else
-                        status="PASS"
-                        detail="Daemon responding"
-                    fi
+                if docker info >/dev/null 2>&1 && docker run --rm hello-world >/dev/null 2>&1; then
+                    status="PASS"
+                    detail="Non-root access OK (daemon active)"
+                elif sudo docker info >/dev/null 2>&1; then
+                    status="WARN"
+                    detail="Works with sudo; run 'newgrp docker'"
                 else
                     status="WARN"
-                    detail="Docker installed, daemon not running or need group"
+                    detail="Docker installed, daemon not running"
                 fi
             fi
             ;;
         pdk)
             EDA_VENV="${EDA_VENV:-${HOME}/.eda_venv}"
             PDK_DIR="${PDK_ROOT:-${HOME}/.ciel}"
-            if [[ -d "${PDK_DIR}/sky130A" ]] || [[ -d "${PDK_DIR}/sky130B" ]]; then
+            # Check for installed PDKs via ciel command first, then directory
+            local pdk_found=0
+            if [[ -f "${EDA_VENV}/bin/ciel" ]]; then
+                if "${EDA_VENV}/bin/ciel" ls --pdk-family=sky130 2>/dev/null | grep -q "installed"; then
+                    pdk_found=1
+                fi
+            fi
+            if [[ ${pdk_found} -eq 1 ]] || [[ -d "${PDK_DIR}/sky130A" ]] || [[ -d "${PDK_DIR}/sky130B" ]]; then
                 status="PASS"
                 detail="PDK present in ${PDK_DIR}"
             elif [[ -f "${EDA_VENV}/bin/ciel" ]]; then

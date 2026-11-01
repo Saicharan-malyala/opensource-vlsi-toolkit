@@ -52,33 +52,39 @@ if command -v ciel >/dev/null 2>&1; then
     export PDK_ROOT="${PDK_ROOT_DIR}"
     mkdir -p "${PDK_ROOT_DIR}"
 
+    local pdk_installed=0
     if ciel ls --pdk-family="${PDK_FAMILY}" 2>/dev/null | grep -q "installed"; then
         log_info "${PDK_FAMILY} PDK is already installed in ${PDK_ROOT_DIR}."
+        pdk_installed=1
     else
         log_info "Resolving default ${PDK_FAMILY} PDK version via ciel..."
         DEFAULT_PDK_HASH=$(ciel ls-remote --pdk-family="${PDK_FAMILY}" 2>/dev/null | grep -v '^\s*$' | tail -n1 | awk '{print $1}' || echo "")
         if [[ -n "${DEFAULT_PDK_HASH}" ]]; then
             log_info "Enabling ${PDK_FAMILY} PDK commit ${DEFAULT_PDK_HASH} via ciel (this may take a few minutes)..."
-            # Retry up to 3 times in case of transient network read timeouts
-            local success=0
             for attempt in 1 2 3; do
                 log_info "Downloading and enabling PDK (attempt ${attempt}/3)..."
                 if run_cmd ciel enable --pdk-family="${PDK_FAMILY}" "${DEFAULT_PDK_HASH}"; then
-                    success=1
+                    pdk_installed=1
                     break
                 else
                     log_warn "ciel enable attempt ${attempt} failed or timed out. Waiting 5s before retrying..."
                     sleep 5
                 fi
             done
-            if [[ ${success} -eq 0 ]]; then
-                log_warn "ciel enable failed after 3 attempts. You can re-run 'ciel enable --pdk-family=${PDK_FAMILY} <hash>' later."
+            if [[ ${pdk_installed} -eq 0 ]]; then
+                log_warn "ciel enable failed after 3 attempts. You can re-run 'ciel enable --pdk-family=${PDK_FAMILY} ${DEFAULT_PDK_HASH}' later."
             fi
         else
             log_warn "Could not resolve remote ${PDK_FAMILY} PDK hash automatically. You can run 'ciel enable --pdk-family=${PDK_FAMILY} <hash>' later."
         fi
     fi
-    record_summary "${TOOL_NAME}" "INSTALLED" "v${VER} (PDK: ${PDK_FAMILY})"
+
+    record_summary "ciel_manager" "INSTALLED" "v${VER}"
+    if [[ ${pdk_installed} -eq 1 ]]; then
+        record_summary "sky130_pdk" "INSTALLED" "Present in ${PDK_ROOT_DIR}"
+    else
+        record_summary "sky130_pdk" "INCOMPLETE" "Download timed out or pending"
+    fi
 else
     log_error "Failed to verify ${TOOL_NAME}."
     record_summary "${TOOL_NAME}" "FAILED" "ciel not in venv PATH"

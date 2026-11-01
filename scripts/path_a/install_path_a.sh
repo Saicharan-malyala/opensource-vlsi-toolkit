@@ -69,6 +69,21 @@ if [[ -f "${EDA_VENV}/bin/activate" && "${DRY_RUN}" -eq 0 ]]; then
     fi
 fi
 
-# 4. Summary Table
+# 4. Summary Table & Validation Status Check
 print_summary_table
-log_success "Part A setup completed!"
+
+# Verify if any core component failed
+HAS_FAILURES=0
+for status in "${SUMMARY_STATUSES[@]}"; do
+    if [[ "${status}" == "FAILED" || "${status}" == "INCOMPLETE" ]]; then
+        HAS_FAILURES=1
+        break
+    fi
+done
+
+if [[ ${HAS_FAILURES} -eq 1 ]]; then
+    log_warn "Part A setup finished with incomplete steps (see summary above)."
+    log_info "Follow the doctor recommendations to complete remaining items."
+else
+    log_success "Part A setup completed successfully!"
+fi

@@ -80,16 +80,18 @@ if command -v docker >/dev/null 2>&1; then
         
         # Test container invocation (invoking docker test container and exiting cleanly)
         log_info "Testing docker execution (invoking hello-world container)..."
-        DOCKER_CMD="docker"
-        if ! docker ps >/dev/null 2>&1; then
-            DOCKER_CMD="sudo docker"
-        fi
-        if ${DOCKER_CMD} run --rm hello-world >/dev/null 2>&1; then
-            log_success "Docker container invocation test passed (invoked and exited successfully)."
-            record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER} (container test passed)"
+        local non_root_ok=0
+        if docker ps >/dev/null 2>&1 && docker run --rm hello-world >/dev/null 2>&1; then
+            non_root_ok=1
+            log_success "Docker non-root execution passed (hello-world container invoked and exited successfully)."
+            record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER} (non-root access OK)"
+        elif sudo docker run --rm hello-world >/dev/null 2>&1; then
+            log_warn "Docker works with sudo, but non-root access requires group refresh."
+            log_warn "Run 'newgrp docker' or re-login to enable non-root Docker access."
+            record_summary "${TOOL_NAME}" "PARTIAL" "v${D_VER} (needs 'newgrp docker')"
         else
             log_warn "Docker container invocation test failed or daemon inactive. Verify docker daemon is active."
-            record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER}"
+            record_summary "${TOOL_NAME}" "WARN" "v${D_VER} (daemon inactive)"
         fi
         exit 0
     fi
@@ -156,13 +158,13 @@ if command -v docker >/dev/null 2>&1; then
         run_cmd sudo systemctl start docker || true
     fi
     log_info "Testing docker container execution..."
-    DOCKER_CMD="docker"
-    if ! docker ps >/dev/null 2>&1; then
-        DOCKER_CMD="sudo docker"
-    fi
-    if ${DOCKER_CMD} run --rm hello-world >/dev/null 2>&1; then
-        log_success "Verified ${TOOL_NAME} version ${D_VER} (container invoked and exited cleanly)."
-        record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER} (container test passed)"
+    if docker ps >/dev/null 2>&1 && docker run --rm hello-world >/dev/null 2>&1; then
+        log_success "Verified ${TOOL_NAME} version ${D_VER} (non-root access OK)."
+        record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER} (non-root access OK)"
+    elif sudo docker run --rm hello-world >/dev/null 2>&1; then
+        log_warn "Docker works with sudo, but non-root access requires group refresh."
+        log_warn "Run 'newgrp docker' or re-login to enable non-root Docker access."
+        record_summary "${TOOL_NAME}" "PARTIAL" "v${D_VER} (needs 'newgrp docker')"
     else
         log_success "Verified ${TOOL_NAME} version ${D_VER}."
         record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER}"
