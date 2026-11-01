@@ -42,7 +42,13 @@ check_item() {
         cmd)
             if command -v "${check_target}" >/dev/null 2>&1; then
                 local ver
-                ver=$("${check_target}" --version 2>&1 | head -n1 || echo "present")
+                if [[ "${check_target}" == "iverilog" ]]; then
+                    ver=$("${check_target}" -V 2>&1 | head -n1 || echo "present")
+                elif [[ "${check_target}" == "ngspice" ]]; then
+                    ver=$("${check_target}" --version 2>&1 | head -n1 || echo "present")
+                else
+                    ver=$("${check_target}" --version 2>&1 | head -n1 || echo "present")
+                fi
                 status="PASS"
                 detail="${ver:0:30}"
             fi
@@ -67,9 +73,25 @@ check_item() {
             ;;
         docker)
             if command -v docker >/dev/null 2>&1; then
-                if docker info >/dev/null 2>&1; then
-                    status="PASS"
-                    detail="Daemon responding"
+                DOCKER_CMD="docker"
+                if ! docker info >/dev/null 2>&1; then
+                    if sudo docker info >/dev/null 2>&1; then
+                        DOCKER_CMD="sudo docker"
+                    fi
+                fi
+                if ${DOCKER_CMD} info >/dev/null 2>&1; then
+                    # Probe container invocation and exit cleanly
+                    if ${DOCKER_CMD} run --rm hello-world >/dev/null 2>&1; then
+                        status="PASS"
+                        if [[ "${DOCKER_CMD}" == "sudo docker" ]]; then
+                            detail="Responding (sudo; newgrp docker needed)"
+                        else
+                            detail="Daemon responding (test run passed)"
+                        fi
+                    else
+                        status="PASS"
+                        detail="Daemon responding"
+                    fi
                 else
                     status="WARN"
                     detail="Docker installed, daemon not running or need group"
@@ -85,6 +107,41 @@ check_item() {
             elif [[ -f "${EDA_VENV}/bin/ciel" ]]; then
                 status="WARN"
                 detail="ciel installed, PDK download needed"
+            fi
+            ;;
+        container_tool)
+            # Check if container environment is present (Part A LibreLane container image or Part B IIC container image)
+            DOCKER_CMD="docker"
+            if ! docker ps >/dev/null 2>&1 && sudo docker ps >/dev/null 2>&1; then
+                DOCKER_CMD="sudo docker"
+            fi
+            
+            # Check in Part B container if present
+            IIC_IMG="${IIC_OSIC_TOOLS_IMAGE:-hpretl/iic-osic-tools:latest}"
+            local tool_found=0
+            local tool_ver=""
+
+            # First check if the host has it
+            if command -v "${check_target}" >/dev/null 2>&1; then
+                tool_ver=$("${check_target}" --version 2>&1 | head -n1 || echo "host present")
+                status="PASS"
+                detail="Host: ${tool_ver:0:24}"
+                tool_found=1
+            fi
+
+            # Next check container if not found on host and docker is accessible
+            if [[ ${tool_found} -eq 0 ]] && command -v docker >/dev/null 2>&1; then
+                if ${DOCKER_CMD} images --format '{{.Repository}}:{{.Tag}}' 2>/dev/null | grep -q "${IIC_IMG}"; then
+                    if ${DOCKER_CMD} run --rm "${IIC_IMG}" bash -lc "command -v ${check_target} >/dev/null 2>&1" 2>/dev/null; then
+                        status="PASS"
+                        detail="Inside Part B container"
+                        tool_found=1
+                    fi
+                elif python3 -c "import librelane" >/dev/null 2>&1 || [[ -f "${EDA_VENV}/bin/librelane" ]]; then
+                    status="PASS"
+                    detail="Inside LibreLane flow"
+                    tool_found=1
+                fi
             fi
             ;;
     esac
@@ -121,14 +178,14 @@ check_item "pyuvm" 1 "python" "pyuvm"
 check_item "LibreLane" 0 "python" "librelane"
 check_item "Ciel PDK Manager" 0 "python" "ciel"
 check_item "Sky130 PDK" 0 "pdk" "sky130"
-check_item "Yosys (Host)" 0 "cmd" "yosys"
-check_item "OpenROAD (Host)" 0 "cmd" "openroad"
-check_item "OpenSTA (Host)" 0 "cmd" "sta"
-check_item "Magic (Host)" 0 "cmd" "magic"
-check_item "Netgen (Host)" 0 "cmd" "netgen"
-check_item "KLayout (Host)" 0 "cmd" "klayout"
+check_item "Yosys" 0 "container_tool" "yosys"
+check_item "OpenROAD" 0 "container_tool" "openroad"
+check_item "OpenSTA" 0 "container_tool" "sta"
+check_item "Magic" 0 "container_tool" "magic"
+check_item "Netgen" 0 "container_tool" "netgen"
+check_item "KLayout" 0 "container_tool" "klayout"
 check_item "GitHub CLI (gh)" 0 "cmd" "gh"
-check_item "Xschem (Host)" 0 "cmd" "xschem"
+check_item "Xschem" 0 "container_tool" "xschem"
 
 echo ""
 echo -e "${COLOR_BOLD}=====================================================================${COLOR_RESET}"

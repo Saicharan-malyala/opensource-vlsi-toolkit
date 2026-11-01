@@ -51,7 +51,7 @@ fi
 if command -v librelane >/dev/null 2>&1; then
     L_VER=$(librelane --version 2>&1 | awk '{print $NF}' || echo "installed")
     log_info "Running official LibreLane smoke test (dockerized)..."
-    if librelane --dockerized --smoke_test 2>&1 | tee -a "${LOG_FILE}"; then
+    if librelane --dockerized --smoke-test 2>&1 | tee -a "${LOG_FILE}"; then
         log_success "Verified ${TOOL_NAME} v${L_VER} (smoke test passed)."
         record_summary "${TOOL_NAME}" "INSTALLED" "v${L_VER} (smoke test passed)"
     else

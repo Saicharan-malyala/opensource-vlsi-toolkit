@@ -27,7 +27,7 @@ fi
 source "${EDA_VENV}/bin/activate"
 
 if command -v ciel >/dev/null 2>&1; then
-    CIEL_CUR=$(ciel --version 2>&1 | awk '{print $NF}' || echo "detected")
+    CIEL_CUR=$(ciel --version 2>&1 | tail -n1 | awk '{print $NF}' || echo "detected")
     log_info "${TOOL_NAME} is already installed (v${CIEL_CUR})."
 else
     log_info "Installing ciel (pin: ${CIEL_PIN}) into venv..."
@@ -44,7 +44,7 @@ if [[ "${DRY_RUN}" -eq 1 ]]; then
 fi
 
 if command -v ciel >/dev/null 2>&1; then
-    VER=$(ciel --version 2>&1 | awk '{print $NF}' || echo "installed")
+    VER=$(ciel --version 2>&1 | tail -n1 | awk '{print $NF}' || echo "installed")
     log_success "Verified ${TOOL_NAME} v${VER}."
 
     # Verify or fetch PDK if not already present
@@ -55,10 +55,16 @@ if command -v ciel >/dev/null 2>&1; then
     if ciel ls --pdk-family="${PDK_FAMILY}" 2>/dev/null | grep -q "installed"; then
         log_info "${PDK_FAMILY} PDK is already installed in ${PDK_ROOT_DIR}."
     else
-        log_info "Enabling default ${PDK_FAMILY} PDK via ciel (this may take a few minutes)..."
-        run_cmd ciel enable --pdk-family="${PDK_FAMILY}" || {
-            log_warn "ciel enable returned non-zero (network or pre-built asset download issue). You can re-run 'ciel enable --pdk-family=${PDK_FAMILY}' later."
-        }
+        log_info "Resolving default ${PDK_FAMILY} PDK version via ciel..."
+        DEFAULT_PDK_HASH=$(ciel ls-remote --pdk-family="${PDK_FAMILY}" 2>/dev/null | grep -v '^\s*$' | tail -n1 | awk '{print $1}' || echo "")
+        if [[ -n "${DEFAULT_PDK_HASH}" ]]; then
+            log_info "Enabling ${PDK_FAMILY} PDK commit ${DEFAULT_PDK_HASH} via ciel (this may take a few minutes)..."
+            run_cmd ciel enable --pdk-family="${PDK_FAMILY}" "${DEFAULT_PDK_HASH}" || {
+                log_warn "ciel enable returned non-zero. You can re-run 'ciel enable --pdk-family=${PDK_FAMILY} <hash>' later."
+            }
+        else
+            log_warn "Could not resolve remote ${PDK_FAMILY} PDK hash automatically. You can run 'ciel enable --pdk-family=${PDK_FAMILY} <hash>' later."
+        fi
     fi
     record_summary "${TOOL_NAME}" "INSTALLED" "v${VER} (PDK: ${PDK_FAMILY})"
 else

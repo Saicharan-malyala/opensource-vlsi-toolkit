@@ -8,8 +8,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
 TOOL_NAME="cocotb_pyuvm"
-COCOTB_PIN="${COCOTB_VERSION:-1.9.2}"
-PYUVM_PIN="${PYUVM_VERSION:-0.3.4}"
+COCOTB_PIN="${COCOTB_VERSION:-2.1.0}"
+PYUVM_PIN="${PYUVM_VERSION:-5.0.0}"
 EDA_VENV="${EDA_VENV:-${HOME}/.eda_venv}"
 
 log_step "Checking ${TOOL_NAME} inside python environment..."

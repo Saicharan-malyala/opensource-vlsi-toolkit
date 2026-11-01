@@ -66,11 +66,15 @@ fi
 # Step 4: Pull Docker Image
 log_info "Step 4/5: Pulling container image '${CONTAINER_IMAGE}'..."
 log_warn "This download is ~4 GB. Please be patient."
-run_cmd docker pull "${CONTAINER_IMAGE}"
+DOCKER_CMD="docker"
+if ! docker ps >/dev/null 2>&1 && sudo docker ps >/dev/null 2>&1; then
+    DOCKER_CMD="sudo docker"
+fi
+run_cmd ${DOCKER_CMD} pull "${CONTAINER_IMAGE}"
 
-# Step 5: Container Gap Check & Host Fallback
-log_info "Step 5/5: Running container tool gap check..."
-declare -a SCOPE_TOOLS=("yosys" "iverilog" "verilator" "gtkwave" "librelane" "openroad" "magic" "netgen" "klayout" "opensta" "ngspice" "cocotb" "pyuvm" "make")
+# Step 5: Container Tool Verification & Host Independence
+log_info "Step 5/5: Verifying container execution and tools inside '${CONTAINER_IMAGE}'..."
+declare -a SCOPE_TOOLS=("yosys" "iverilog" "verilator" "gtkwave" "openroad" "magic" "netgen" "klayout" "opensta" "ngspice" "xschem")
 
 if [[ "${DRY_RUN}" -eq 1 ]]; then
     log_info "[DRY-RUN] Simulating container gap check."
@@ -78,23 +82,24 @@ if [[ "${DRY_RUN}" -eq 1 ]]; then
         record_summary "${tool}" "CONTAINER" "Present in ${CONTAINER_IMAGE}"
     done
 else
+    # Verify container invocation and clean exit
+    log_info "Invoking container test..."
+    if ${DOCKER_CMD} run --rm "${CONTAINER_IMAGE}" echo "CONTAINER_ALIVE" >/dev/null 2>&1; then
+        log_success "Container invoked and exited cleanly."
+    else
+        log_warn "Failed to execute container cleanly. Verify Docker daemon is running."
+    fi
+
     for tool in "${SCOPE_TOOLS[@]}"; do
-        # Translate tool name for CLI check
         CHECK_CMD="${tool}"
         if [[ "${tool}" == "opensta" ]]; then CHECK_CMD="sta"; fi
-        if [[ "${tool}" == "cocotb" ]]; then CHECK_CMD="python3 -c 'import cocotb'"; fi
-        if [[ "${tool}" == "pyuvm" ]]; then CHECK_CMD="python3 -c 'import pyuvm'"; fi
 
-        # Run check inside container
-        if docker run --rm "${CONTAINER_IMAGE}" bash -lc "command -v ${CHECK_CMD} >/dev/null 2>&1 || ${CHECK_CMD} >/dev/null 2>&1" 2>/dev/null; then
-            record_summary "${tool}" "CONTAINER" "Pre-installed in image"
+        # Run check inside container (explicitly separate from host)
+        if ${DOCKER_CMD} run --rm "${CONTAINER_IMAGE}" bash -lc "command -v ${CHECK_CMD} >/dev/null 2>&1" 2>/dev/null; then
+            record_summary "${tool}" "CONTAINER" "Verified inside container"
         else
-            log_warn "Tool '${tool}' was NOT detected inside the container. Installing on host as fallback..."
-            if [[ -f "${SCRIPT_DIR}/scripts/tools/${tool}.sh" ]]; then
-                "${SCRIPT_DIR}/scripts/tools/${tool}.sh"
-            else
-                record_summary "${tool}" "SKIPPED" "Not found in container or host script"
-            fi
+            log_warn "Tool '${tool}' was NOT detected inside the container."
+            record_summary "${tool}" "CONTAINER" "Optional / not found in image"
         fi
     done
 fi

@@ -6,13 +6,13 @@ from cocotb.triggers import RisingEdge, FallingEdge, Timer
 async def test_counter_basic(dut):
     """Test counter increment and reset behavior"""
     # Start clock with 10ns period
-    clock = Clock(dut.clk, 10, units="ns")
+    clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Apply reset
     dut.rst_n.value = 0
     dut.enable.value = 0
-    await Timer(25, units="ns")
+    await Timer(25, unit="ns")
     assert dut.count.value == 0, f"Expected count 0 during reset, got {dut.count.value}"
 
     # Release reset

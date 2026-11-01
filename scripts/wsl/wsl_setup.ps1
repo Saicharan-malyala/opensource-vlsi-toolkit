@@ -168,7 +168,7 @@ Write-Host "NOT on /mnt/c, to avoid NTFS virtualization slowdowns." -ForegroundC
 $repoUrl = "https://github.com/Saicharan-malyala/opensource-vlsi-toolkit.git"
 $wslCommand = "mkdir -p ~/eda_tools && cd ~/eda_tools && " +
               "if [ ! -d 'opensource-vlsi-toolkit/.git' ]; then git clone $repoUrl; fi && " +
-              "cd opensource-vlsi-toolkit && chmod +x install_all.sh doctor.sh lib/*.sh scripts/*/*.sh scripts/*/*/*.sh 2>/dev/null || true && " +
+              "cd opensource-vlsi-toolkit && chmod +x install_all.sh doctor.sh lib/*.sh scripts/*/*.sh 2>/dev/null || true && " +
               "./install_all.sh --path $Path"
 
 if ($DryRun) {

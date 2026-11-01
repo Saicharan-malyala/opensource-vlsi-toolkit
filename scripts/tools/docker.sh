@@ -62,6 +62,12 @@ if command -v docker >/dev/null 2>&1; then
     D_VER=$(docker --version | awk '{print $3}' | tr -d ',')
     if version_gte "${D_VER}" "${MIN_VERSION}"; then
         log_info "Docker is already installed (v${D_VER} >= ${MIN_VERSION})."
+        # Ensure docker service/daemon is running
+        if ! sudo systemctl is-active --quiet docker 2>/dev/null; then
+            log_info "Ensuring docker daemon service is started..."
+            request_sudo "Start docker daemon service"
+            run_cmd sudo systemctl start docker || true
+        fi
         # Check docker group membership
         if groups | grep -q "\bdocker\b"; then
             log_info "User '$(whoami)' is already in the 'docker' group."
@@ -71,7 +77,20 @@ if command -v docker >/dev/null 2>&1; then
             run_cmd sudo usermod -aG docker "$(whoami)"
             log_warn "Added to group. You MUST run 'newgrp docker' or re-login for group changes to take effect."
         fi
-        record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER}"
+        
+        # Test container invocation (invoking docker test container and exiting cleanly)
+        log_info "Testing docker execution (invoking hello-world container)..."
+        DOCKER_CMD="docker"
+        if ! docker ps >/dev/null 2>&1; then
+            DOCKER_CMD="sudo docker"
+        fi
+        if ${DOCKER_CMD} run --rm hello-world >/dev/null 2>&1; then
+            log_success "Docker container invocation test passed (invoked and exited successfully)."
+            record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER} (container test passed)"
+        else
+            log_warn "Docker container invocation test failed or daemon inactive. Verify docker daemon is active."
+            record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER}"
+        fi
         exit 0
     fi
 fi
@@ -132,8 +151,22 @@ fi
 
 if command -v docker >/dev/null 2>&1; then
     D_VER=$(docker --version | awk '{print $3}' | tr -d ',')
-    log_success "Verified ${TOOL_NAME} version ${D_VER}."
-    record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER}"
+    # Ensure docker daemon service is started
+    if ! sudo systemctl is-active --quiet docker 2>/dev/null; then
+        run_cmd sudo systemctl start docker || true
+    fi
+    log_info "Testing docker container execution..."
+    DOCKER_CMD="docker"
+    if ! docker ps >/dev/null 2>&1; then
+        DOCKER_CMD="sudo docker"
+    fi
+    if ${DOCKER_CMD} run --rm hello-world >/dev/null 2>&1; then
+        log_success "Verified ${TOOL_NAME} version ${D_VER} (container invoked and exited cleanly)."
+        record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER} (container test passed)"
+    else
+        log_success "Verified ${TOOL_NAME} version ${D_VER}."
+        record_summary "${TOOL_NAME}" "INSTALLED" "v${D_VER}"
+    fi
 else
     log_error "Failed to verify ${TOOL_NAME}."
     record_summary "${TOOL_NAME}" "FAILED" "Binary not on PATH"

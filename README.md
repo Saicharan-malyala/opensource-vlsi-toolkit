@@ -134,7 +134,7 @@ Clone the repo and run the master installer:
 ```bash
 git clone https://github.com/Saicharan-malyala/opensource-vlsi-toolkit.git
 cd opensource-vlsi-toolkit
-chmod +x install_all.sh doctor.sh lib/*.sh scripts/*/*.sh scripts/*/*/*.sh
+chmod +x install_all.sh doctor.sh lib/*.sh scripts/*/*.sh
 ./install_all.sh
 ```
 Select `[1]` for Part A (LibreLane) or `[2]` for Part B (IIC-OSIC-TOOLS).
